@@ -1,0 +1,10 @@
+readme.instruction.md
+
+# Зависимости
+node_modules/
+
+# Скомпилированные файлы TypeScript (для всех папок задач)
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
