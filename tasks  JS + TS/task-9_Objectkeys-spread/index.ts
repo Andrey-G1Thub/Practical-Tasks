@@ -1,8 +1,10 @@
+type User = {
+  name: string
+  age: number
+}
+
 type Applicants = {
-  [key: string]: {
-    name: string
-    age: number
-  }
+  [key: string]: User
 }
 type WinnerObject = {
   prize: string
