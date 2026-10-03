@@ -1,0 +1,60 @@
+html {
+  font-size: 10px;
+  line-height: 10px;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Обязательно: делаем обертку относительной, чтобы список позиционировался внутри нее */
+.select-dropdown {
+  position: relative;
+  width: 160px; /* Фиксированная ширина для стабильности */
+}
+
+/* Стили кнопки */
+.select-dropdown__button {
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Базовые стили для списка (скрыт) */
+.select-dropdown__list {
+  display: none;
+  position: absolute; /* Список всплывает поверх, не двигая элементы вокруг */
+  top: 100%; /* Располагается прямо под кнопкой */
+  left: 0;
+  width: 100%; /* Растягивается по ширине контейнера */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  background-color: #fff; /* Белый фон, чтобы текст не сливался */
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+/* Когда есть класс active — список показывается */
+.select-dropdown__list.active {
+  display: block;
+}
+
+/* Стили для элементов списка */
+.select-dropdown__list-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.select-dropdown__list-item:hover {
+  background-color: #f0f0f0;
+}
