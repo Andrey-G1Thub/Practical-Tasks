@@ -2,6 +2,9 @@
   --main-background: #fafafa;
   --post-background: #ffffff;
 }
+* {
+  box-sizing: border-box;
+}
 
 body {
   background: var(--main-background);
@@ -13,11 +16,14 @@ body {
   height: 100vh;
   padding: 0;
   margin: 0;
+
+  overflow: hidden;
+  /* overflow: auto; */
 }
 
 #post {
   background: var(--post-background);
-  width: 65%;
+  width: 72%;
   height: 100%;
   padding: 20px;
 
@@ -47,4 +53,10 @@ body {
 
 .post-comment__author {
   font-style: italic;
+}
+/* форма */
+#post-form {
+  display: flex;
+  flex-direction: column;
+  width: 72%;
 }
