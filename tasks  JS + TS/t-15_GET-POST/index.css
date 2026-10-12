@@ -60,3 +60,17 @@ body {
   flex-direction: column;
   width: 72%;
 }
+/*search*/
+.input-container {
+  display: flex;
+  width: 72%;
+  margin-bottom: 10px;
+  position: relative;
+}
+.search-input {
+  width: 100%;
+}
+.search-button {
+  position: absolute;
+  left: 88%;
+}

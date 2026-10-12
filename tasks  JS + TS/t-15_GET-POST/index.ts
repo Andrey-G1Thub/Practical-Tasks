@@ -74,6 +74,47 @@ import { toggleHidden } from './loader.js'
 
 const container: HTMLBodyElement | null = document.querySelector('body')
 
+const createSearchPosts = () => {
+  const inputContainer = document.createElement('form')
+  inputContainer.className = 'input-container'
+
+  const searchInput = document.createElement('input')
+  searchInput.className = 'search-input'
+  searchInput.name = 'inputId'
+  searchInput.type = 'text'
+  searchInput.placeholder = 'Введите номер поста'
+
+  const searchButton = document.createElement('button')
+  searchButton.type = 'submit'
+  searchButton.className = 'search-button'
+  searchButton.innerText = 'найти'
+
+  inputContainer.addEventListener('submit', (event) => {
+    event.preventDefault()
+    console.log('ищу данные')
+
+    const { inputId } = (event.target as HTMLFormElement).elements as any
+
+    console.log('inputId', inputId)
+    const id = inputId.value
+    // console.log('id', id)
+
+    if (id) {
+      console.log(`пост номер ${id} найден `)
+
+      // findPost(mockPosts, id)
+      renderPost(id)
+      inputId.value = ''
+    }
+  })
+
+  // searchInput.append(searchButton)
+  // console.log('searchInput, ', searchInput)
+  inputContainer.append(searchInput, searchButton)
+
+  container?.append(inputContainer)
+}
+
 const createForm = () => {
   // <form id="post-form" class="post-form">
   const postForm = document.createElement('form')
@@ -129,7 +170,7 @@ const createForm = () => {
   postForm.append(postTitleInput, postBodyInput, buttonSubmit)
   container?.append(postForm)
   // mainContainer.append(postForm)
-  console.log('container', container)
+  // console.log('container', container)
 }
 
 const createPost = (post: Post, comments: Comments) => {
@@ -210,7 +251,29 @@ const sendNewPost = async (titleName: any, titleBody: any) => {
     toggleHidden()
   }
 }
+const findPost = async (postArray, postId) => {
+  try {
+    toggleHidden()
+    console.log('ищем   пост')
 
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const searchPostObj: Post = postArray.find((el) => {
+      // console.log('el, ', el)
+      // console.log('el.id, ', el.id)
+
+      return Number(el.id) === Number(postId)
+    })
+    console.log('Нашли пост ', searchPostObj)
+
+    // renderPost(searchPostObj)
+  } catch (error) {
+    console.log('error: не нашли пост', error)
+  } finally {
+    console.log('finally')
+    toggleHidden()
+  }
+}
 // createForm()
 
 const renderPost = async (id: number = 7): Promise<void> => {
@@ -237,17 +300,16 @@ const renderPost = async (id: number = 7): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, 400))
 
     // Ищем пост в локальной "базе"
-    const post = mockPosts.find((p) => p.id === id)
+    const post = mockPosts.find((p) => Number(p.id) === Number(id))
     if (!post) {
       throw new Error(`Пост с ID ${id} не найден в локальной базе`)
     }
     const comments = mockComments.filter((c) => c.postId === id)
-
     createPost(post, comments)
   } catch (error) {
     console.log('error', error)
   } finally {
-    console.log('finally')
+    console.log('finally из renderPost')
     toggleHidden()
   }
 }
@@ -256,10 +318,12 @@ const renderPost = async (id: number = 7): Promise<void> => {
 const initApp = () => {
   console.log('initApp запущен!')
   // 1. Создаем форму один раз вверху
+  createSearchPosts()
   createForm()
 
   // 2. Рендерим начальный пост
-  renderPost(2)
+  // renderPost(2)
+  // findPost(mockPosts, id)
 }
 
 initApp()
