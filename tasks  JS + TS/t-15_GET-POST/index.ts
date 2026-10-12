@@ -174,6 +174,14 @@ const createForm = () => {
 }
 
 const createPost = (post: Post, comments: Comments) => {
+  const oldPost = document.querySelector('#post')
+  console.log('isPost', oldPost)
+
+  if (oldPost) {
+    oldPost.remove()
+    console.log('пост удален')
+  }
+
   const postConteiner: HTMLDivElement = document.createElement('div')
   postConteiner.id = 'post'
   postConteiner.className = 'post'
@@ -209,8 +217,11 @@ const createPost = (post: Post, comments: Comments) => {
   })
 
   postConteiner.append(postTitle, postText, postCommentsText, postComments)
+  console.log('postConteiner', postConteiner.classList.contains('post'))
+
   container?.append(postConteiner)
 }
+
 
 // const sendNewPost = async (titleName, titleBody) => {
 const sendNewPost = async (titleName: any, titleBody: any) => {
@@ -301,11 +312,24 @@ const renderPost = async (id: number = 7): Promise<void> => {
 
     // Ищем пост в локальной "базе"
     const post = mockPosts.find((p) => Number(p.id) === Number(id))
+
+    console.log('post ', post)
+
     if (!post) {
       throw new Error(`Пост с ID ${id} не найден в локальной базе`)
     }
-    const comments = mockComments.filter((c) => c.postId === id)
+
+    // const oldPost = document.querySelector('#post')
+    // console.log('isPost', oldPost)
+
+    // if (oldPost) {
+    //   oldPost.remove()
+    //   console.log('пост удален')
+    // }
+
+    const comments = mockComments.filter((c) => c.postId === Number(id))
     createPost(post, comments)
+    console.log('isPost', oldPost)
   } catch (error) {
     console.log('error', error)
   } finally {
