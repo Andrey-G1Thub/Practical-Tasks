@@ -18,7 +18,7 @@ body {
   margin: 0;
 
   overflow: hidden;
-  /* overflow: auto; */
+  overflow: auto;
 }
 
 #post {
@@ -29,11 +29,12 @@ body {
 
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .post__title {
   margin: 5px 0;
+  font-size: 12px;
 }
 
 .post__comments-text {

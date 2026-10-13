@@ -103,18 +103,25 @@ const createSearchPosts = () => {
       console.log(`пост номер ${id} найден `)
 
       // findPost(mockPosts, id)
-      renderPost(id)
+      renderOnePost(id)
       inputId.value = ''
     }
   })
 
-  // searchInput.append(searchButton)
-  // console.log('searchInput, ', searchInput)
   inputContainer.append(searchInput, searchButton)
-
   container?.append(inputContainer)
 }
+const createButton = () => {
+  const getAllButton = document.createElement('button')
+  getAllButton.type = 'submit'
+  getAllButton.className = 'get-button'
+  getAllButton.innerText = 'найти все посты'
 
+  getAllButton.addEventListener('click', () => {
+    renderAllPosts()
+  })
+  container?.append(getAllButton)
+}
 const createForm = () => {
   // <form id="post-form" class="post-form">
   const postForm = document.createElement('form')
@@ -139,7 +146,7 @@ const createForm = () => {
   // <button type="submit">Опубликовать</button>
   const buttonSubmit = document.createElement('button')
   buttonSubmit.type = 'submit'
-  buttonSubmit.innerHTML = 'Опубликовать'
+  buttonSubmit.innerText = 'Опубликовать'
 
   postForm.addEventListener('submit', (event: SubmitEvent) => {
     event.preventDefault()
@@ -158,7 +165,7 @@ const createForm = () => {
     if (inputTitle && inputBody) {
       console.log(`Вы создали пост ${inputTitle} с текстом ${inputBody}`)
 
-      sendNewPost(inputTitle, inputBody)
+      renderNewPost(inputTitle, inputBody)
 
       titleName.value = ''
       titleBody.value = ''
@@ -166,21 +173,19 @@ const createForm = () => {
       alert(`Введите правильные данные!`)
     }
   })
-
+  // createButton()
   postForm.append(postTitleInput, postBodyInput, buttonSubmit)
   container?.append(postForm)
-  // mainContainer.append(postForm)
-  // console.log('container', container)
 }
 
 const createPost = (post: Post, comments: Comments) => {
-  const oldPost = document.querySelector('#post')
-  console.log('isPost', oldPost)
+  // const oldPost = document.querySelector('#post')
+  // console.log('isPost', oldPost)
 
-  if (oldPost) {
-    oldPost.remove()
-    console.log('пост удален')
-  }
+  // if (oldPost) {
+  //   oldPost.remove()
+  //   console.log('пост удален')
+  // }
 
   const postConteiner: HTMLDivElement = document.createElement('div')
   postConteiner.id = 'post'
@@ -222,72 +227,9 @@ const createPost = (post: Post, comments: Comments) => {
   container?.append(postConteiner)
 }
 
+// -------------- рендер
 
-// const sendNewPost = async (titleName, titleBody) => {
-const sendNewPost = async (titleName: any, titleBody: any) => {
-  try {
-    toggleHidden()
-    console.log('создаем новый пост')
-    // const responsePost: Response = await fetch(`${POSTS_URL}`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-    //   body: JSON.stringify({ title: titleName, body: titleBody, userId: 101 }),
-    // })
-    // // console.log('responsePost', responsePost)
-
-    // if (!responsePost.ok) {
-    //   throw new Error('Ошибка создания поста')
-    // }
-
-    // const posts = await responsePost.json()
-    // console.log('posts', posts)
-    // console.log('posts', posts.title, posts.body)
-    // createPost(posts, [])
-    //
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    const newPostObj: Post = {
-      userId: 101,
-      id: mockPosts.length + 1,
-      title: titleName,
-      body: titleBody,
-    }
-    mockPosts.push(newPostObj)
-
-    createPost(newPostObj, [])
-  } catch (error) {
-    console.log('error', error)
-  } finally {
-    console.log('finally')
-    toggleHidden()
-  }
-}
-const findPost = async (postArray, postId) => {
-  try {
-    toggleHidden()
-    console.log('ищем   пост')
-
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    const searchPostObj: Post = postArray.find((el) => {
-      // console.log('el, ', el)
-      // console.log('el.id, ', el.id)
-
-      return Number(el.id) === Number(postId)
-    })
-    console.log('Нашли пост ', searchPostObj)
-
-    // renderPost(searchPostObj)
-  } catch (error) {
-    console.log('error: не нашли пост', error)
-  } finally {
-    console.log('finally')
-    toggleHidden()
-  }
-}
-// createForm()
-
-const renderPost = async (id: number = 7): Promise<void> => {
+const renderOnePost = async (id: number = 7): Promise<void> => {
   try {
     toggleHidden()
 
@@ -319,17 +261,26 @@ const renderPost = async (id: number = 7): Promise<void> => {
       throw new Error(`Пост с ID ${id} не найден в локальной базе`)
     }
 
-    // const oldPost = document.querySelector('#post')
-    // console.log('isPost', oldPost)
+    const oldPost = document.querySelector('#post')
+    console.log('oldPost', oldPost)
+    const oldPosts = document.querySelectorAll('#post')
+    console.log('oldPosts', oldPosts)
+    const emptyPosts = oldPosts.filter((el) => {
+      console.log('el', el)
+      return
+    })
+    console.log('emptyPosts', emptyPosts)
 
-    // if (oldPost) {
-    //   oldPost.remove()
-    //   console.log('пост удален')
-    // }
+    if (oldPost) {
+      oldPost.remove()
+      console.log('пост удален')
+    }
+    if (oldPosts) {
+    }
 
     const comments = mockComments.filter((c) => c.postId === Number(id))
     createPost(post, comments)
-    console.log('isPost', oldPost)
+    // console.log('isPost', oldPost)
   } catch (error) {
     console.log('error', error)
   } finally {
@@ -337,12 +288,116 @@ const renderPost = async (id: number = 7): Promise<void> => {
     toggleHidden()
   }
 }
+const renderAllPosts = async () => {
+  try {
+    const oldPost = document.querySelector('#post')
+    console.log('isPost', oldPost)
+
+    if (oldPost) {
+      oldPost.remove()
+      console.log('пост удален')
+    }
+
+    toggleHidden()
+
+    await new Promise((resolve) => setTimeout(resolve, 400))
+
+    // Ищем пост в локальной "базе"
+    const allPost = mockPosts.forEach((el) => {
+      // console.log('el', el.title)
+      // const title = el.title
+      const comments = mockComments.filter((c) => c.postId === Number(el.id))
+      console.log('comments', comments)
+
+      const isComments = comments ? comments : []
+      createPost(el, isComments)
+    })
+    console.log('allPost, ', allPost)
+  } catch (error) {
+    console.log('error', error)
+  } finally {
+    console.log('finally из renderPost')
+    toggleHidden()
+  }
+}
+// const sendNewPost = async (titleName, titleBody) => {
+const renderNewPost = async (titleName: any, titleBody: any) => {
+  try {
+    toggleHidden()
+    console.log('создаем новый пост')
+    // const responsePost: Response = await fetch(`${POSTS_URL}`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    //   body: JSON.stringify({ title: titleName, body: titleBody, userId: 101 }),
+    // })
+    // // console.log('responsePost', responsePost)
+
+    // if (!responsePost.ok) {
+    //   throw new Error('Ошибка создания поста')
+    // }
+
+    // const posts = await responsePost.json()
+    // console.log('posts', posts)
+    // console.log('posts', posts.title, posts.body)
+    // createPost(posts, [])
+    //
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const newPostObj: Post = {
+      userId: 101,
+      id: mockPosts.length + 1,
+      title: titleName,
+      body: titleBody,
+    }
+    mockPosts.push(newPostObj)
+
+    const oldPost = document.querySelectorAll('#post')
+    console.log('oldPost', oldPost)
+
+    // if (oldPost) {
+    //   oldPost.remove()
+    //   console.log('пост удален')
+    // }
+
+    createPost(newPostObj, [])
+  } catch (error) {
+    console.log('error', error)
+  } finally {
+    console.log('finally')
+    toggleHidden()
+  }
+}
+const findPost = async (postArray: any) => {
+  try {
+    toggleHidden()
+    console.log('ищем   пост')
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    // const searchPostObj: Post = postArray.find((el) => {
+    //   return Number(el.id) === Number(postId)
+    // })
+    // console.log('Нашли пост ', searchPostObj)
+
+    console.log('postArray', postArray)
+    // createPost()
+
+    // renderPost(searchPostObj)
+  } catch (error) {
+    console.log('error: не нашли пост', error)
+  } finally {
+    console.log('finally')
+    toggleHidden()
+  }
+}
+// createForm()
 
 // Инициализация при старте приложения:
 const initApp = () => {
   console.log('initApp запущен!')
   // 1. Создаем форму один раз вверху
   createSearchPosts()
+  createButton()
   createForm()
 
   // 2. Рендерим начальный пост
