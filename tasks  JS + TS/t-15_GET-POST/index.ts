@@ -226,6 +226,16 @@ const createPost = (post: Post, comments: Comments) => {
 
   container?.append(postConteiner)
 }
+const oldPosts = () => {
+  const oldPosts = document.querySelectorAll('#post')
+  // console.log('oldPosts', oldPosts)
+
+  if (oldPosts) {
+    oldPosts.forEach((el) => el.remove())
+    console.log('Предыдущие посты или пост, были удалены удален')
+    // console.log('oldPosts 2', oldPosts)
+  }
+}
 
 // -------------- рендер
 
@@ -261,22 +271,17 @@ const renderOnePost = async (id: number = 7): Promise<void> => {
       throw new Error(`Пост с ID ${id} не найден в локальной базе`)
     }
 
-    const oldPost = document.querySelector('#post')
-    console.log('oldPost', oldPost)
-    const oldPosts = document.querySelectorAll('#post')
-    console.log('oldPosts', oldPosts)
-    const emptyPosts = oldPosts.filter((el) => {
-      console.log('el', el)
-      return
-    })
-    console.log('emptyPosts', emptyPosts)
+    // const oldPost = document.querySelector('#post')
+    // console.log('oldPost', oldPost)
+    // const oldPosts = document.querySelectorAll('#post')
+    // console.log('oldPosts', oldPosts)
 
-    if (oldPost) {
-      oldPost.remove()
-      console.log('пост удален')
-    }
-    if (oldPosts) {
-    }
+    // if (oldPosts) {
+    //   oldPosts.forEach((el) => el.remove())
+    //   console.log('пост удален')
+    //   console.log('oldPosts 2', oldPosts)
+    // }
+    oldPosts()
 
     const comments = mockComments.filter((c) => c.postId === Number(id))
     createPost(post, comments)
@@ -290,18 +295,11 @@ const renderOnePost = async (id: number = 7): Promise<void> => {
 }
 const renderAllPosts = async () => {
   try {
-    const oldPost = document.querySelector('#post')
-    console.log('isPost', oldPost)
-
-    if (oldPost) {
-      oldPost.remove()
-      console.log('пост удален')
-    }
-
     toggleHidden()
 
     await new Promise((resolve) => setTimeout(resolve, 400))
 
+    oldPosts()
     // Ищем пост в локальной "базе"
     const allPost = mockPosts.forEach((el) => {
       // console.log('el', el.title)
@@ -310,8 +308,10 @@ const renderAllPosts = async () => {
       console.log('comments', comments)
 
       const isComments = comments ? comments : []
+
       createPost(el, isComments)
     })
+
     console.log('allPost, ', allPost)
   } catch (error) {
     console.log('error', error)
@@ -350,14 +350,10 @@ const renderNewPost = async (titleName: any, titleBody: any) => {
       body: titleBody,
     }
     mockPosts.push(newPostObj)
+    console.log('Длина массива после пуша:', mockPosts.length)
+    console.log('Последний элемент:', mockPosts[mockPosts.length - 1])
 
-    const oldPost = document.querySelectorAll('#post')
-    console.log('oldPost', oldPost)
-
-    // if (oldPost) {
-    //   oldPost.remove()
-    //   console.log('пост удален')
-    // }
+    oldPosts()
 
     createPost(newPostObj, [])
   } catch (error) {
