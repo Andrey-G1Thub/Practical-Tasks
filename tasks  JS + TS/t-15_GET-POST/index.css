@@ -40,6 +40,11 @@ body {
 .post__comments-text {
   margin-bottom: 10px;
   border-bottom: 1px solid;
+  color: rgb(53, 53, 53);
+}
+.post__comments-text:hover {
+  cursor: pointer;
+  color: rgb(0, 0, 0);
 }
 
 .post__comments {

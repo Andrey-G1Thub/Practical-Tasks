@@ -91,16 +91,16 @@ const createSearchPosts = () => {
 
   inputContainer.addEventListener('submit', (event) => {
     event.preventDefault()
-    console.log('ищу данные')
+    // console.log('ищу данные')
 
     const { inputId } = (event.target as HTMLFormElement).elements as any
 
-    console.log('inputId', inputId)
+    // console.log('inputId', inputId)
     const id = inputId.value
     // console.log('id', id)
 
     if (id) {
-      console.log(`пост номер ${id} найден `)
+      // console.log(`пост номер ${id} найден `)
 
       // findPost(mockPosts, id)
       renderOnePost(id)
@@ -150,7 +150,7 @@ const createForm = () => {
 
   postForm.addEventListener('submit', (event: SubmitEvent) => {
     event.preventDefault()
-    console.log('заработало')
+    // console.log('заработало')
     // const { target } = event
 
     // console.log('target.titleName.value', target.titleName.value)
@@ -199,12 +199,31 @@ const createPost = (post: Post, comments: Comments) => {
   postText.className = 'post__text'
   postText.innerText = `Текст Поста: ${post.body}`
   //<b class="post__comments-text">Комментарии</b>
+  // let isCommentHiiden = false
+  // console.log('isCommentHiiden 1', isCommentHiiden)
   const postCommentsText: HTMLElement = document.createElement('b')
-  postCommentsText.className = 'post__comments-text'
+  postCommentsText.className = 'post__comments-text '
   postCommentsText.innerText = `Комментарии : ${comments.length}`
+
   // <div class="post__comments">
   const postComments: HTMLDivElement = document.createElement('div')
   postComments.className = 'post__comments'
+  postComments.style.display = 'none'
+
+  postCommentsText.addEventListener('click', () => {
+    console.log('нажал на Комментарии')
+    // isCommentHiiden = true
+    // console.log('isCommentHiiden 2', isCommentHiiden)
+
+    if (postComments.style.display === 'none') {
+      postComments.style.display = 'block'
+      console.log('Комментарии открыты')
+    } else {
+      postComments.style.display = 'none'
+      console.log('Комментарии закрыты')
+    }
+  })
+
   comments.forEach((element: Comment) => {
     // <div class="post-comment">
     const postComment: HTMLDivElement = document.createElement('div')
@@ -214,15 +233,17 @@ const createPost = (post: Post, comments: Comments) => {
     postCommentAuthor.className = 'post-comment__author'
     postCommentAuthor.innerText = `Автор : ${element.email}`
     // <span class="post-comment__text">
-    const postCoomment: HTMLSpanElement = document.createElement('span')
-    postCoomment.className = 'post-comment__text'
-    postCoomment.innerText = `комментарий : ${element.body}`
-    postComment.append(postCommentAuthor, postCoomment)
+    const postCommentText: HTMLSpanElement = document.createElement('span')
+    postCommentText.className = 'post-comment__text'
+    postCommentText.innerText = `комментарий : ${element.body}`
+    postComment.append(postCommentAuthor, postCommentText)
     postComments.append(postComment)
+    // isCommentHiiden = false
+    // console.log('isCommentHiiden 3', isCommentHiiden)
   })
 
   postConteiner.append(postTitle, postText, postCommentsText, postComments)
-  console.log('postConteiner', postConteiner.classList.contains('post'))
+  // console.log('postConteiner', postConteiner.classList.contains('post'))
 
   container?.append(postConteiner)
 }
@@ -232,7 +253,7 @@ const oldPosts = () => {
 
   if (oldPosts) {
     oldPosts.forEach((el) => el.remove())
-    console.log('Предыдущие посты или пост, были удалены удален')
+    // console.log('Предыдущие посты или пост, были удалены удален')
     // console.log('oldPosts 2', oldPosts)
   }
 }
@@ -265,7 +286,7 @@ const renderOnePost = async (id: number = 7): Promise<void> => {
     // Ищем пост в локальной "базе"
     const post = mockPosts.find((p) => Number(p.id) === Number(id))
 
-    console.log('post ', post)
+    // console.log('post ', post)
 
     if (!post) {
       throw new Error(`Пост с ID ${id} не найден в локальной базе`)
@@ -305,14 +326,14 @@ const renderAllPosts = async () => {
       // console.log('el', el.title)
       // const title = el.title
       const comments = mockComments.filter((c) => c.postId === Number(el.id))
-      console.log('comments', comments)
+      // console.log('comments', comments)
 
       const isComments = comments ? comments : []
 
       createPost(el, isComments)
     })
 
-    console.log('allPost, ', allPost)
+    // console.log('allPost, ', allPost)
   } catch (error) {
     console.log('error', error)
   } finally {
@@ -324,7 +345,7 @@ const renderAllPosts = async () => {
 const renderNewPost = async (titleName: any, titleBody: any) => {
   try {
     toggleHidden()
-    console.log('создаем новый пост')
+    // console.log('создаем новый пост')
     // const responsePost: Response = await fetch(`${POSTS_URL}`, {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json; charset=UTF-8' },
@@ -350,8 +371,8 @@ const renderNewPost = async (titleName: any, titleBody: any) => {
       body: titleBody,
     }
     mockPosts.push(newPostObj)
-    console.log('Длина массива после пуша:', mockPosts.length)
-    console.log('Последний элемент:', mockPosts[mockPosts.length - 1])
+    // console.log('Длина массива после пуша:', mockPosts.length)
+    // console.log('Последний элемент:', mockPosts[mockPosts.length - 1])
 
     oldPosts()
 
