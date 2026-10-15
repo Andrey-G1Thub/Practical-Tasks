@@ -1,73 +1,3 @@
-// const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
-// const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments'
-
-// const mockPosts: Post[] = [
-//   {
-//     userId: 1,
-//     id: 1,
-//     title: 'Первый локальный пост',
-//     body: 'Это текст первого поста для проверки без интернета.',
-//   },
-//   {
-//     userId: 1,
-//     id: 2,
-//     title: 'Второй локальный пост',
-//     body: 'А это содержимое второго поста, всё работает локально!',
-//   },
-//   {
-//     userId: 1,
-//     id: 7,
-//     title: 'Пост номер семь (как раньше)',
-//     body: 'Тестовый текст для седьмого поста с моковых данных.',
-//   },
-// ]
-
-// const mockComments: Comment[] = [
-//   {
-//     postId: 1,
-//     id: 1,
-//     name: 'круто',
-//     email: 'ivan@test.com',
-//     body: 'Отличная статья!',
-//   },
-//   {
-//     postId: 1,
-//     id: 2,
-//     name: 'спасибо',
-//     email: 'olga@test.com',
-//     body: 'Очень помогло разобраться.',
-//   },
-//   {
-//     postId: 2,
-//     id: 3,
-//     name: 'вопрос',
-//     email: 'alex@test.com',
-//     body: 'А как это сделать на React?',
-//   },
-//   {
-//     postId: 7,
-//     id: 4,
-//     name: 'комментарий',
-//     email: 'maxim@gmail.com',
-//     body: 'Работает как часы!',
-//   },
-// ]
-
-// interface Post {
-//   userId: number
-//   id: number
-//   title: string
-//   body: string
-// }
-// interface Comment {
-//   postId: number
-//   id: number
-//   name: string
-//   email: string
-//   body: string
-// }
-// type Comments = Comment[]
-
 import type { Post, Comments, Comment } from './database.js'
 import { mockPosts, mockComments } from './database.js'
 import { toggleHidden } from './loader.js'
@@ -150,10 +80,7 @@ const createForm = () => {
 
   postForm.addEventListener('submit', (event: SubmitEvent) => {
     event.preventDefault()
-    // console.log('заработало')
     // const { target } = event
-
-    // console.log('target.titleName.value', target.titleName.value)
     // const inputTitle = target.titleName.value
 
     const { titleName, titleBody } = (event.target as HTMLFormElement)
@@ -173,34 +100,65 @@ const createForm = () => {
       alert(`Введите правильные данные!`)
     }
   })
-  // createButton()
+
   postForm.append(postTitleInput, postBodyInput, buttonSubmit)
   container?.append(postForm)
 }
 
 const createPost = (post: Post, comments: Comments) => {
-  // const oldPost = document.querySelector('#post')
-  // console.log('isPost', oldPost)
-
-  // if (oldPost) {
-  //   oldPost.remove()
-  //   console.log('пост удален')
-  // }
-
   const postConteiner: HTMLDivElement = document.createElement('div')
   postConteiner.id = 'post'
   postConteiner.className = 'post'
+
+  // postConteiner.addEventListener('click', () => {
+  //   console.log('клик на post')
+  // })
   //h1
   const postTitle: HTMLHeadingElement = document.createElement('h1')
   postTitle.className = 'post__title'
   postTitle.innerText = `Название Поста: ${post.title}`
+
+  const deleteButton = document.createElement('button')
+  deleteButton.type = 'submit'
+  deleteButton.className = 'delete-button'
+  deleteButton.innerText = 'Удалить пост'
+
+  deleteButton.addEventListener('click', (e) => {
+    // console.log('e', e)
+    // console.log('e.target', e.target)
+    // const deletePost = document.querySelector('#post')
+    // deletePost?.remove()
+    // console.log('post', post)
+    // console.log('post', post.id)
+
+    const index = mockPosts.findIndex((p) => {
+      // console.log('p', p)
+      // console.log('p', p.id)
+
+      return p.id === post.id
+      // p.id === post.id
+    })
+    console.log('index', index) // -1  почему? и код работает при этом- нужно прописывать   return
+    console.log('post, ', post)
+    console.log('mockPosts', mockPosts)
+
+    if (index !== -1) {
+      mockPosts.splice(index, 1)
+      console.log('Массив после удаления:', mockPosts)
+    }
+
+    postConteiner.remove()
+
+    // console.log('deletePost', deletePost)
+    // console.log('deletePost id', deletePost?.id)
+    // console.log('deletePost id', deletePost?.postTitle)
+  })
   // <p class="post__text">Текст Поста</p>
   const postText: HTMLParagraphElement = document.createElement('p')
   postText.className = 'post__text'
   postText.innerText = `Текст Поста: ${post.body}`
   //<b class="post__comments-text">Комментарии</b>
-  // let isCommentHiiden = false
-  // console.log('isCommentHiiden 1', isCommentHiiden)
+
   const postCommentsText: HTMLElement = document.createElement('b')
   postCommentsText.className = 'post__comments-text '
   postCommentsText.innerText = `Комментарии : ${comments.length}`
@@ -212,8 +170,6 @@ const createPost = (post: Post, comments: Comments) => {
 
   postCommentsText.addEventListener('click', () => {
     console.log('нажал на Комментарии')
-    // isCommentHiiden = true
-    // console.log('isCommentHiiden 2', isCommentHiiden)
 
     if (postComments.style.display === 'none') {
       postComments.style.display = 'block'
@@ -236,25 +192,25 @@ const createPost = (post: Post, comments: Comments) => {
     const postCommentText: HTMLSpanElement = document.createElement('span')
     postCommentText.className = 'post-comment__text'
     postCommentText.innerText = `комментарий : ${element.body}`
+
     postComment.append(postCommentAuthor, postCommentText)
     postComments.append(postComment)
-    // isCommentHiiden = false
-    // console.log('isCommentHiiden 3', isCommentHiiden)
   })
 
-  postConteiner.append(postTitle, postText, postCommentsText, postComments)
-  // console.log('postConteiner', postConteiner.classList.contains('post'))
-
+  postConteiner.append(
+    postTitle,
+    postText,
+    postCommentsText,
+    postComments,
+    deleteButton,
+  )
   container?.append(postConteiner)
 }
 const oldPosts = () => {
   const oldPosts = document.querySelectorAll('#post')
-  // console.log('oldPosts', oldPosts)
 
   if (oldPosts) {
     oldPosts.forEach((el) => el.remove())
-    // console.log('Предыдущие посты или пост, были удалены удален')
-    // console.log('oldPosts 2', oldPosts)
   }
 }
 
@@ -286,27 +242,14 @@ const renderOnePost = async (id: number = 7): Promise<void> => {
     // Ищем пост в локальной "базе"
     const post = mockPosts.find((p) => Number(p.id) === Number(id))
 
-    // console.log('post ', post)
-
     if (!post) {
       throw new Error(`Пост с ID ${id} не найден в локальной базе`)
     }
 
-    // const oldPost = document.querySelector('#post')
-    // console.log('oldPost', oldPost)
-    // const oldPosts = document.querySelectorAll('#post')
-    // console.log('oldPosts', oldPosts)
-
-    // if (oldPosts) {
-    //   oldPosts.forEach((el) => el.remove())
-    //   console.log('пост удален')
-    //   console.log('oldPosts 2', oldPosts)
-    // }
     oldPosts()
 
     const comments = mockComments.filter((c) => c.postId === Number(id))
     createPost(post, comments)
-    // console.log('isPost', oldPost)
   } catch (error) {
     console.log('error', error)
   } finally {
@@ -322,14 +265,9 @@ const renderAllPosts = async () => {
 
     oldPosts()
     // Ищем пост в локальной "базе"
-    const allPost = mockPosts.forEach((el) => {
-      // console.log('el', el.title)
-      // const title = el.title
+    mockPosts.forEach((el) => {
       const comments = mockComments.filter((c) => c.postId === Number(el.id))
-      // console.log('comments', comments)
-
       const isComments = comments ? comments : []
-
       createPost(el, isComments)
     })
 
@@ -371,8 +309,6 @@ const renderNewPost = async (titleName: any, titleBody: any) => {
       body: titleBody,
     }
     mockPosts.push(newPostObj)
-    // console.log('Длина массива после пуша:', mockPosts.length)
-    // console.log('Последний элемент:', mockPosts[mockPosts.length - 1])
 
     oldPosts()
 
@@ -384,30 +320,6 @@ const renderNewPost = async (titleName: any, titleBody: any) => {
     toggleHidden()
   }
 }
-const findPost = async (postArray: any) => {
-  try {
-    toggleHidden()
-    console.log('ищем   пост')
-
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    // const searchPostObj: Post = postArray.find((el) => {
-    //   return Number(el.id) === Number(postId)
-    // })
-    // console.log('Нашли пост ', searchPostObj)
-
-    console.log('postArray', postArray)
-    // createPost()
-
-    // renderPost(searchPostObj)
-  } catch (error) {
-    console.log('error: не нашли пост', error)
-  } finally {
-    console.log('finally')
-    toggleHidden()
-  }
-}
-// createForm()
 
 // Инициализация при старте приложения:
 const initApp = () => {
@@ -416,12 +328,6 @@ const initApp = () => {
   createSearchPosts()
   createButton()
   createForm()
-
-  // 2. Рендерим начальный пост
-  // renderPost(2)
-  // findPost(mockPosts, id)
 }
 
 initApp()
-// createForm()
-// renderPost(2)
