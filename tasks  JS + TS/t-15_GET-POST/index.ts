@@ -118,41 +118,80 @@ const createPost = (post: Post, comments: Comments) => {
   postTitle.className = 'post__title'
   postTitle.innerText = `Название Поста: ${post.title}`
 
+  const updateButton = document.createElement('button')
+  updateButton.type = 'submit'
+  updateButton.className = 'update-button'
+  updateButton.innerText = 'обновить пост'
+
+  //для placeHolder
+  // updateButton.addEventListener('click', async () => {
+  //   try {
+  //     toggleHidden()
+
+  //     const newTitle = 'Обновленный заголовок'
+  //     const newBody = 'Новый текст поста'
+
+  //     // 1. Отправляем запрос на сервер для обновления данных
+  //     const response = await fetch(`${POSTS_URL}/${post.id}`, {
+  //       method: 'PUT', // или PATCH
+  //       headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+  //       body: JSON.stringify({ title: newTitle, body: newBody, userId: post.userId, id: post.id })
+  //     })
+
+  //     if (!response.ok) {
+  //       throw new Error('Ошибка при обновлении поста')
+  //     }
+
+  //     const updatedPost = await response.json()
+
+  //     // 2. Обновляем данные в локальном объекте и на экране
+  //     post.title = updatedPost.title
+  //     post.body = updatedPost.body
+
+  //     postTitle.innerText = `Название Поста: ${post.title}`
+  //     postText.innerText = `Текст Поста: ${post.body}`
+
+  //     console.log('Пост успешно обновлен на сервере!', updatedPost)
+  //   } catch (error) {
+  //     console.log('error', error)
+  //   } finally {
+  //     toggleHidden()
+  //   }
+  // })
+
+  updateButton.addEventListener('click', (event) => {
+    // event.preventDefault()
+
+    // renderUpdatePost(newTitle, newBody)
+    const newTitle = 'обновленный пост'
+    const newBody = 'Обновленный текс поста'
+    postTitle.innerText = newTitle
+    postText.innerText = newBody
+
+    // post.title = 'обновленный пост'
+    // post.body = 'Обновленный текс поста'
+    console.log('post', post)
+    post.title = postTitle.innerText
+    post.body = postText.innerText
+
+    console.log('mockPosts', mockPosts)
+  })
+
   const deleteButton = document.createElement('button')
   deleteButton.type = 'submit'
   deleteButton.className = 'delete-button'
   deleteButton.innerText = 'Удалить пост'
 
-  deleteButton.addEventListener('click', (e) => {
-    // console.log('e', e)
-    // console.log('e.target', e.target)
-    // const deletePost = document.querySelector('#post')
-    // deletePost?.remove()
-    // console.log('post', post)
-    // console.log('post', post.id)
-
-    const index = mockPosts.findIndex((p) => {
-      // console.log('p', p)
-      // console.log('p', p.id)
-
-      return p.id === post.id
-      // p.id === post.id
-    })
-    console.log('index', index) // -1  почему? и код работает при этом- нужно прописывать   return
-    console.log('post, ', post)
-    console.log('mockPosts', mockPosts)
+  deleteButton.addEventListener('click', () => {
+    const index = mockPosts.findIndex((p) => p.id === post.id)
 
     if (index !== -1) {
       mockPosts.splice(index, 1)
       console.log('Массив после удаления:', mockPosts)
     }
-
     postConteiner.remove()
-
-    // console.log('deletePost', deletePost)
-    // console.log('deletePost id', deletePost?.id)
-    // console.log('deletePost id', deletePost?.postTitle)
   })
+
   // <p class="post__text">Текст Поста</p>
   const postText: HTMLParagraphElement = document.createElement('p')
   postText.className = 'post__text'
@@ -203,6 +242,7 @@ const createPost = (post: Post, comments: Comments) => {
     postCommentsText,
     postComments,
     deleteButton,
+    updateButton,
   )
   container?.append(postConteiner)
 }
