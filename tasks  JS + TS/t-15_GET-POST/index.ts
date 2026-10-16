@@ -104,6 +104,75 @@ const createForm = () => {
   postForm.append(postTitleInput, postBodyInput, buttonSubmit)
   container?.append(postForm)
 }
+const createModalWindow = (post: Post) => {
+  // <form id="post-form" class="post-form">
+  const modalContainer = document.createElement('div')
+  modalContainer.className = 'modal-container'
+  modalContainer.id = 'modal-window'
+
+  const modalForm = document.createElement('form')
+  modalForm.id = 'modal-form'
+  modalForm.className = 'modal-form'
+  // modalForm.style.display = 'block'
+
+  // <input type="text" id="post-title-input" placeholder="Название поста"
+  const modalTitleInput = document.createElement('input')
+  modalTitleInput.type = 'text'
+  modalTitleInput.id = 'modal-title-input'
+  modalTitleInput.placeholder = `Название Поста: ${post.title}`
+  modalTitleInput.name = 'titleName'
+  modalTitleInput.required = true
+
+  // <textarea id="post-body-input" placeholder="Текст поста" required></textarea>
+  const modalBodyInput = document.createElement('textarea')
+  modalBodyInput.id = 'modal-body-input'
+  modalBodyInput.name = 'titleBody'
+  modalBodyInput.placeholder = `Текст поста: ${post.title}`
+  modalBodyInput.required = true
+
+  // <button type="submit">Опубликовать</button>
+  const buttonSubmit = document.createElement('button')
+  buttonSubmit.type = 'submit'
+  buttonSubmit.innerText = 'обновить'
+
+  // Кнопка закрытия/отмены модалки
+  const buttonCancel = document.createElement('button')
+  buttonCancel.type = 'button'
+  buttonCancel.innerText = 'Отмена'
+  buttonCancel.addEventListener('click', () => {
+    modalContainer.remove() // Закрываем модалку без сохранения
+  })
+
+  // Закрытие по клику на темный фон вокруг формы
+  modalContainer.addEventListener('click', (event) => {
+    if (event.target === modalContainer) {
+      modalContainer.remove()
+    }
+  })
+
+  modalForm.addEventListener('submit', (event: SubmitEvent) => {
+    event.preventDefault()
+
+    const { titleName, titleBody } = (event.target as HTMLFormElement)
+      .elements as any
+    const inputTitle = titleName.value.trim()
+    const inputBody = titleBody.value.trim()
+
+    if (inputTitle && inputBody) {
+      console.log(`Вы обновили ${inputTitle} с текстом ${inputBody}`)
+
+      updatePost(post.id, post.userId, inputTitle, inputBody)
+
+      modalContainer.remove()
+    } else {
+      alert(`Введите правильные данные!`)
+    }
+  })
+
+  modalForm.append(modalTitleInput, modalBodyInput, buttonSubmit)
+  modalContainer.append(modalForm)
+  container?.append(modalContainer)
+}
 
 const createPost = (post: Post, comments: Comments) => {
   const postConteiner: HTMLDivElement = document.createElement('div')
@@ -159,22 +228,18 @@ const createPost = (post: Post, comments: Comments) => {
   //   }
   // })
 
+  let isModalWindow = false
+
   updateButton.addEventListener('click', (event) => {
     // event.preventDefault()
 
-    // renderUpdatePost(newTitle, newBody)
-    const newTitle = 'обновленный пост'
-    const newBody = 'Обновленный текс поста'
-    postTitle.innerText = newTitle
-    postText.innerText = newBody
+    // console.log('event', event)
 
-    // post.title = 'обновленный пост'
-    // post.body = 'Обновленный текс поста'
-    console.log('post', post)
-    post.title = postTitle.innerText
-    post.body = postText.innerText
-
-    console.log('mockPosts', mockPosts)
+    isModalWindow = true
+    if (isModalWindow) {
+      createModalWindow(post)
+    }
+    isModalWindow = false
   })
 
   const deleteButton = document.createElement('button')
@@ -350,9 +415,67 @@ const renderNewPost = async (titleName: any, titleBody: any) => {
     }
     mockPosts.push(newPostObj)
 
-    oldPosts()
-
     createPost(newPostObj, [])
+  } catch (error) {
+    console.log('error', error)
+  } finally {
+    console.log('finally')
+    toggleHidden()
+  }
+}
+const updatePost = async (
+  id: number,
+  userId: number,
+  titleName: any,
+  titleBody: any,
+) => {
+  try {
+    toggleHidden()
+
+    // console.log('создаем новый пост')
+    // const responsePost: Response = await fetch(`${POSTS_URL}`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    //   body: JSON.stringify({ title: titleName, body: titleBody, userId: 101 }),
+    // })
+    // // console.log('responsePost', responsePost)
+
+    // if (!responsePost.ok) {
+    //   throw new Error('Ошибка создания поста')
+    // }
+
+    // const posts = await responsePost.json()
+    // console.log('posts', posts)
+    // console.log('posts', posts.title, posts.body)
+    // createPost(posts, [])
+    //
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const index = mockPosts.findIndex((p) => p.id === id)
+
+    if (index !== -1) {
+      mockPosts[index] = {
+        userId: userId,
+        id: id,
+        title: titleName,
+        body: titleBody,
+      }
+    }
+
+    // oldPosts()
+    const currentPostsOnScreen = document.querySelectorAll('#post')
+
+    console.log('currentPostsOnScreen', currentPostsOnScreen)
+    console.log('currentPostsOnScreen.length ', currentPostsOnScreen.length)
+
+    if (currentPostsOnScreen.length === 1) {
+      // Если открывали ровно один пост — показываем его же обновленным
+      renderOnePost(id)
+    } else {
+      // Если смотрели общий список (или ничего) — перерисовываем все посты
+      renderAllPosts()
+    }
   } catch (error) {
     console.log('error', error)
   } finally {

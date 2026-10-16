@@ -80,3 +80,42 @@ body {
   position: absolute;
   left: 88%;
 }
+/* modal form */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.modal-form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+/* Стили для инпутов и текста внутри модалки (если нужно привязать к классам или тегам) */
+.modal-form input,
+.modal-form textarea {
+  width: 100%;
+  padding: 8px;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
