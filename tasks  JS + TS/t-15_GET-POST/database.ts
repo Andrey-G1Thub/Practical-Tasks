@@ -1,6 +1,8 @@
 export const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 export const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments'
 
+export const BASE_URL = 'https://jsonplaceholder.typicode.com'
+
 export const mockPosts: Post[] = [
   {
     userId: 1,
@@ -56,8 +58,8 @@ export const mockComments: Comment[] = [
 export interface Post {
   userId: number
   id: number
-  title: string | number
-  body: string | number
+  title: string
+  body: string
 }
 export interface Comment {
   postId: number
