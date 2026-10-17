@@ -56,8 +56,8 @@ export const mockComments: Comment[] = [
 export interface Post {
   userId: number
   id: number
-  title: string
-  body: string
+  title: string | number
+  body: string | number
 }
 export interface Comment {
   postId: number
@@ -67,3 +67,6 @@ export interface Comment {
   body: string
 }
 export type Comments = Comment[]
+
+export type InputText = string | number
+export type InputBody = string | number
