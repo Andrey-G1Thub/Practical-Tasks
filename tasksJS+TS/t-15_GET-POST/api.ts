@@ -1,10 +1,16 @@
 import { toggleHidden } from './loader.js'
 import { BASE_URL } from './database.js'
-import { oldPosts } from './component/ui.js'
 import type { Post, InputText, InputBody, Comment } from './database.js'
-import { createPost } from './component/ui.js'
 
-export const renderOnePost = async (id: number = 7): Promise<void> => {
+export const fetchOnePost = async (
+  id: number = 7,
+): Promise<
+  | {
+      post: Post
+      comments: Comment[]
+    }
+  | undefined
+> => {
   try {
     toggleHidden()
 
@@ -19,8 +25,8 @@ export const renderOnePost = async (id: number = 7): Promise<void> => {
     const comments: Comment[] = commentsResponse.ok
       ? await commentsResponse.json()
       : []
-    oldPosts()
-    createPost(post, comments)
+
+    return { post, comments }
 
     // для мока
     // await new Promise((resolve) => setTimeout(resolve, 400))
@@ -38,32 +44,29 @@ export const renderOnePost = async (id: number = 7): Promise<void> => {
     //
   } catch (error) {
     console.log('error', error)
+    return undefined
   } finally {
     console.log('finally из renderOnePost')
     toggleHidden()
   }
 }
 
-export const renderAllPosts = async (): Promise<void> => {
+export const fetchAllPosts = async () => {
   try {
     toggleHidden()
-
     const response = await fetch(`${BASE_URL}/posts?_limit=10`)
-    if (!response.ok) {
-      throw new Error('Ошибка загрузки постов')
-    }
+    if (!response.ok) throw new Error('Ошибка загрузки постов')
     const posts: Post[] = await response.json()
 
-    oldPosts()
-
+    const result = []
     for (const post of posts) {
-      const commentsResp = await fetch(`${BASE_URL}/post/${post.id}/comments`)
+      const commentsResp = await fetch(`${BASE_URL}/posts/${post.id}/comments`)
       const comments: Comment[] = commentsResp.ok
         ? await commentsResp.json()
         : []
-      createPost(post, comments)
+      result.push({ post, comments })
     }
-
+    return result
     // //для мока
     //     await new Promise((resolve) => setTimeout(resolve, 400))
 
@@ -77,16 +80,16 @@ export const renderAllPosts = async (): Promise<void> => {
     //
   } catch (error) {
     console.log('error', error)
+    return []
   } finally {
-    console.log('finally из renderPost')
     toggleHidden()
   }
 }
 
-export const renderNewPost = async (
+export const createNewPostOnServer = async (
   titleName: InputText,
   titleBody: InputBody,
-): Promise<void> => {
+): Promise<Post | null> => {
   try {
     toggleHidden()
 
@@ -104,10 +107,7 @@ export const renderNewPost = async (
       throw new Error('Ошибка создания поста')
     }
 
-    const createdPost = await response.json()
-    console.log('Пост создан на сервере:', createdPost)
-    oldPosts()
-    createPost(createdPost, [])
+    return await response.json()
 
     // для мока
     // await new Promise((resolve) => setTimeout(resolve, 500))
@@ -123,6 +123,7 @@ export const renderNewPost = async (
     //
   } catch (error) {
     console.log('error', error)
+    return null
   } finally {
     console.log('finally renderNewPost')
     toggleHidden()
@@ -133,7 +134,7 @@ export const updatePost = async (
   userId: number,
   titleName: InputText,
   titleBody: InputBody,
-): Promise<void> => {
+): Promise<Post | null> => {
   try {
     toggleHidden()
     const response = await fetch(`${BASE_URL}/posts/${id}`, {
@@ -146,15 +147,10 @@ export const updatePost = async (
       throw new Error('Ошибка при обновлении поста')
     }
 
-    const updatedPost: Post = await response.json()
-    console.log('Пост успешно обновлен на сервере:', updatedPost)
+    const updatePost: Post = await response.json()
+    console.log('Пост успешно обновлен на сервере:', updatePost)
 
-    const currentPostsOnScreen = document.querySelectorAll('#post')
-    if (currentPostsOnScreen.length === 1) {
-      renderOnePost(id)
-    } else {
-      renderAllPosts()
-    }
+    return updatePost
 
     // для мока
     // await new Promise((resolve) => setTimeout(resolve, 500))
@@ -179,20 +175,19 @@ export const updatePost = async (
     //
   } catch (error) {
     console.log('error', error)
+    return null
   } finally {
     console.log('finally updatePost')
     toggleHidden()
   }
 }
 
-export const deletePost = async (id: number): Promise<void> => {
+export const deletePostOnServer = async (id: number): Promise<boolean> => {
   try {
     const response = await fetch(`${BASE_URL}/posts/${id} `, {
       method: 'DELETE',
     })
-    if (response.ok) {
-      console.log(`Пост с ID ${id} успешно удален на сервере`)
-    }
+    return response.ok
     // для мока
     // const index = mockPosts.findIndex((p) => p.id === id)
 
@@ -202,5 +197,6 @@ export const deletePost = async (id: number): Promise<void> => {
     // }
   } catch (error) {
     console.error('Ошибка при удалении поста:', error)
+    return false
   }
 }

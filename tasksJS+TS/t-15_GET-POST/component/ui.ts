@@ -1,9 +1,13 @@
-import type { Post, Comments, Comment, InputText, InputBody } from '../database'
+import type { Post, Comments, Comment } from '../database'
 import { createModalWindow } from './modal.js'
-import { mockPosts } from '../database.js'
+import {
+  createNewPostOnServer,
+  fetchOnePost,
+  fetchAllPosts,
+  deletePostOnServer,
+} from '../api'
+import { validatePostForm } from '../src/validators.js'
 import { container } from '../index.js'
-import { renderNewPost, renderOnePost, renderAllPosts } from '../api.js'
-import { deletePost } from '../api.js'
 
 export const createPost = (post: Post, comments: Comments) => {
   const postConteiner: HTMLDivElement = document.createElement('div')
@@ -32,7 +36,7 @@ export const createPost = (post: Post, comments: Comments) => {
   deleteButton.innerText = 'Удалить пост'
 
   deleteButton.addEventListener('click', () => {
-    deletePost(post.id)
+    deletePostOnServer(post.id)
     postConteiner.remove()
   })
 
@@ -88,8 +92,10 @@ export const createPost = (post: Post, comments: Comments) => {
     deleteButton,
     updateButton,
   )
+  const container: HTMLBodyElement | null = document.querySelector('body')
   container?.append(postConteiner)
 }
+
 export const createForm = (): void => {
   // <form id="post-form" class="post-form">
   const postForm: HTMLFormElement = document.createElement('form')
@@ -128,22 +134,35 @@ export const createForm = (): void => {
     // const { titleName, titleBody } = (event.target as HTMLFormElement)
     //   .elements as any
 
-    const inputTitle: InputText = titleName.value.trim()
-    const inputBody: InputBody = titleBody.value.trim()
+    //тестирование
+    const validation = validatePostForm(titleName.value, titleBody.value)
 
-    if (inputTitle && inputBody) {
-      console.log(`Вы создали пост ${inputTitle} с текстом ${inputBody}`)
-
-      renderNewPost(inputTitle, inputBody)
-
+    if (validation.isValid) {
+      createNewPostOnServer(titleName.value.trim(), titleBody.value.trim())
       titleName.value = ''
       titleBody.value = ''
     } else {
-      alert(`Введите правильные данные!`)
+      alert(validation.errorMessage)
     }
+    //
+
+    // const inputTitle: InputText = titleName.value.trim()
+    // const inputBody: InputBody = titleBody.value.trim()
+
+    // if (inputTitle && inputBody) {
+    //   console.log(`Вы создали пост ${inputTitle} с текстом ${inputBody}`)
+
+    //   renderNewPost(inputTitle, inputBody)
+
+    //   titleName.value = ''
+    //   titleBody.value = ''
+    // } else {
+    //   alert(`Введите правильные данные!`)
+    // }
   })
 
   postForm.append(postTitleInput, postBodyInput, buttonSubmit)
+
   container?.append(postForm)
 }
 
@@ -170,12 +189,13 @@ export const createSearchPosts = (): void => {
     const id: number = Number(inputId.value.trim())
 
     if (id) {
-      renderOnePost(id)
+      fetchOnePost(id)
       inputId.value = ''
     }
   })
 
   inputContainer.append(searchInput, searchButton)
+  const container: HTMLBodyElement | null = document.querySelector('body')
   container?.append(inputContainer)
 }
 export const oldPosts = (): void => {
@@ -192,7 +212,8 @@ export const createButton = (): void => {
   getAllButton.innerText = 'найти все посты'
 
   getAllButton.addEventListener('click', () => {
-    renderAllPosts()
+    fetchAllPosts()
   })
+  const container: HTMLBodyElement | null = document.querySelector('body')
   container?.append(getAllButton)
 }

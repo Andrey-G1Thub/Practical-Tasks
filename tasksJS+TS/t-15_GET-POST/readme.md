@@ -82,3 +82,7 @@ body: JSON.stringify({ title, body, userId: 1 }) (переводим объек�
 
 ---------------------5 задача:
 добавление удаление модального окна
+
+запуск
+cd "tasksJS+TS"
+npm run task-15

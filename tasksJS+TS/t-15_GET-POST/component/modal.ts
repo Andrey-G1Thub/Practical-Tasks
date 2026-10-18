@@ -1,6 +1,7 @@
 import type { Post } from '../database'
-import { updatePost } from '../api.js'
+import { fetchAllPosts, updatePost } from '../api.js'
 import { container } from '../index.js'
+import { createPost, oldPosts } from './ui'
 
 export const createModalWindow = (post: Post): void => {
   // <form id="post-form" class="post-form">
@@ -48,7 +49,7 @@ export const createModalWindow = (post: Post): void => {
     }
   })
 
-  modalForm.addEventListener('submit', (event: SubmitEvent) => {
+  modalForm.addEventListener('submit', async (event: SubmitEvent) => {
     event.preventDefault()
 
     const form = event.target as HTMLFormElement
@@ -64,10 +65,18 @@ export const createModalWindow = (post: Post): void => {
 
     if (inputTitle && inputBody) {
       console.log(`Вы обновили ${inputTitle} с текстом ${inputBody}`)
-
-      updatePost(post.id, post.userId, inputTitle, inputBody)
-
-      modalContainer.remove()
+      const updated = await updatePost(
+        post.id,
+        post.userId,
+        inputTitle,
+        inputBody,
+      )
+      if (updated) {
+        const postsData = await fetchAllPosts()
+        oldPosts()
+        postsData?.forEach(({ post, comments }) => createPost(post, comments))
+        modalContainer.remove()
+      }
     } else {
       alert(`Введите правильные данные!`)
     }
