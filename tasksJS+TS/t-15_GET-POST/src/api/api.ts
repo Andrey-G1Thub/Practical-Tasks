@@ -1,6 +1,12 @@
-import { toggleHidden } from './loader.js'
-import { BASE_URL } from './database.js'
-import type { Post, InputText, InputBody, Comment } from './database.js'
+import { toggleHidden } from '../../loader.js'
+import { BASE_URL } from '../../database.js'
+import type { Post, InputText, InputBody, Comment } from '../../database.js'
+
+const createdPostIds = new Set<number>()
+
+export const isCreatedPost = (id: number): boolean => {
+  return createdPostIds.has(id)
+}
 
 export const fetchOnePost = async (
   id: number = 7,
@@ -107,7 +113,10 @@ export const createNewPostOnServer = async (
       throw new Error('Ошибка создания поста')
     }
 
-    return await response.json()
+    const newPost: Post = await response.json()
+    createdPostIds.add(newPost.id)
+
+    return newPost
 
     // для мока
     // await new Promise((resolve) => setTimeout(resolve, 500))

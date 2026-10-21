@@ -1,17 +1,25 @@
-import type { Post, Comments, Comment } from '../database'
+import type { Post, Comments, Comment } from '../../database.js'
 import { createModalWindow } from './modal.js'
 import {
   createNewPostOnServer,
   fetchOnePost,
   fetchAllPosts,
   deletePostOnServer,
-} from '../api'
-import { validatePostForm } from '../src/validators.js'
-import { container } from '../index.js'
+} from '../api/api.js'
+import { validatePostForm } from '../validators/validators.js'
+import { container } from '../../index.js'
+
+export const oldPosts = (): void => {
+  const oldPosts = document.querySelectorAll('.post')
+
+  if (oldPosts) {
+    oldPosts.forEach((el) => el.remove())
+  }
+}
 
 export const createPost = (post: Post, comments: Comments) => {
   const postConteiner: HTMLDivElement = document.createElement('div')
-  postConteiner.id = 'post'
+  postConteiner.id = `post-${post.id}`
   postConteiner.className = 'post'
 
   //h1
@@ -27,7 +35,7 @@ export const createPost = (post: Post, comments: Comments) => {
   updateButton.addEventListener('click', () => {
     // Защита от открытия нескольких модалок одновременно
     if (document.querySelector('#modal-window')) return
-    createModalWindow(post)
+    createModalWindow(post, postConteiner)
   })
 
   const deleteButton: HTMLButtonElement = document.createElement('button')
@@ -92,7 +100,7 @@ export const createPost = (post: Post, comments: Comments) => {
     deleteButton,
     updateButton,
   )
-  const container: HTMLBodyElement | null = document.querySelector('body')
+  // const container: HTMLBodyElement | null = document.querySelector('body')
   container?.append(postConteiner)
 }
 
@@ -114,7 +122,7 @@ export const createForm = (): void => {
   const postBodyInput: HTMLTextAreaElement = document.createElement('textarea')
   postBodyInput.id = 'post-body-input'
   postBodyInput.name = 'titleBody'
-  postBodyInput.placeholder = 'Текст поста '
+  postBodyInput.placeholder = 'Текст поста'
   postBodyInput.required = true
 
   // <button type="submit">Опубликовать</button>
@@ -122,7 +130,7 @@ export const createForm = (): void => {
   buttonSubmit.type = 'submit'
   buttonSubmit.innerText = 'Опубликовать'
 
-  postForm.addEventListener('submit', (event: SubmitEvent) => {
+  postForm.addEventListener('submit', async (event: SubmitEvent) => {
     event.preventDefault()
 
     const form = event.target as HTMLFormElement
@@ -138,7 +146,16 @@ export const createForm = (): void => {
     const validation = validatePostForm(titleName.value, titleBody.value)
 
     if (validation.isValid) {
-      createNewPostOnServer(titleName.value.trim(), titleBody.value.trim())
+      const newPost = await createNewPostOnServer(
+        titleName.value.trim(),
+        titleBody.value.trim(),
+      )
+      if (newPost) {
+        // Если хотите, чтобы старые посты стирались при создании нового:
+        oldPosts()
+
+        createPost(newPost, []) // Комментариев у нового поста пока нет
+      }
       titleName.value = ''
       titleBody.value = ''
     } else {
@@ -181,38 +198,49 @@ export const createSearchPosts = (): void => {
   searchButton.className = 'search-button'
   searchButton.innerText = 'найти'
 
-  inputContainer.addEventListener('submit', (event) => {
+  inputContainer.addEventListener('submit', async (event) => {
     event.preventDefault()
 
-    const { inputId } = (event.target as HTMLFormElement).elements as any
+    const id = Number(searchInput.value.trim())
 
-    const id: number = Number(inputId.value.trim())
-
-    if (id) {
-      fetchOnePost(id)
-      inputId.value = ''
+    if (!Number.isInteger(id) || id <= 0) {
+      alert('Введите корректный ID поста')
+      return
     }
+
+    oldPosts()
+
+    const result = await fetchOnePost(id)
+
+    if (result) {
+      createPost(result.post, result.comments)
+    } else {
+      alert(`Пост с ID ${id} не найден`)
+    }
+
+    searchInput.value = ''
   })
 
   inputContainer.append(searchInput, searchButton)
   const container: HTMLBodyElement | null = document.querySelector('body')
   container?.append(inputContainer)
 }
-export const oldPosts = (): void => {
-  const oldPosts = document.querySelectorAll('#post')
 
-  if (oldPosts) {
-    oldPosts.forEach((el) => el.remove())
-  }
-}
 export const createButton = (): void => {
   const getAllButton: HTMLButtonElement = document.createElement('button')
   getAllButton.type = 'submit'
   getAllButton.className = 'get-button'
   getAllButton.innerText = 'найти все посты'
 
-  getAllButton.addEventListener('click', () => {
-    fetchAllPosts()
+  getAllButton.addEventListener('click', async () => {
+    // fetchAllPosts()
+    oldPosts()
+
+    const posts = await fetchAllPosts()
+
+    posts.forEach(({ post, comments }) => {
+      createPost(post, comments)
+    })
   })
   const container: HTMLBodyElement | null = document.querySelector('body')
   container?.append(getAllButton)

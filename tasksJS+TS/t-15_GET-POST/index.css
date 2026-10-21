@@ -21,15 +21,14 @@ body {
   overflow: auto;
 }
 
-#post {
+.post {
   background: var(--post-background);
   width: 72%;
-  height: 100%;
+
   padding: 20px;
 
   display: flex;
   flex-direction: column;
-  /* overflow: hidden; */
 }
 
 .post__title {

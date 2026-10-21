@@ -1,9 +1,11 @@
-import type { Post } from '../database'
-import { fetchAllPosts, updatePost } from '../api.js'
-import { container } from '../index.js'
-import { createPost, oldPosts } from './ui'
+import type { Post } from '../../database.js'
+import { updatePost, isCreatedPost } from '../api/api.js'
+import { container } from '../../index.js'
 
-export const createModalWindow = (post: Post): void => {
+export const createModalWindow = (
+  post: Post,
+  postContainer: HTMLDivElement,
+): void => {
   // <form id="post-form" class="post-form">
   const modalContainer: HTMLDivElement = document.createElement('div')
   modalContainer.className = 'modal-container'
@@ -65,20 +67,42 @@ export const createModalWindow = (post: Post): void => {
 
     if (inputTitle && inputBody) {
       console.log(`Вы обновили ${inputTitle} с текстом ${inputBody}`)
+
+      if (isCreatedPost(post.id)) {
+        // Пост создан в текущем сеансе — обновляем только карточку
+        const postTitle = postContainer.querySelector('.post__title')
+        const postText = postContainer.querySelector('.post__text')
+
+        if (postTitle && postText) {
+          postTitle.textContent = `Название Поста: ${inputTitle}`
+          postText.textContent = `Текст Поста: ${inputBody}`
+        }
+
+        modalContainer.remove()
+        return
+      }
+
+      // Исходный пост — обновляем через JSONPlaceholder
       const updated = await updatePost(
         post.id,
         post.userId,
         inputTitle,
         inputBody,
       )
+
       if (updated) {
-        const postsData = await fetchAllPosts()
-        oldPosts()
-        postsData?.forEach(({ post, comments }) => createPost(post, comments))
+        const postTitle = postContainer.querySelector('.post__title')
+        const postText = postContainer.querySelector('.post__text')
+
+        if (postTitle && postText) {
+          postTitle.textContent = `Название Поста: ${updated.title}`
+          postText.textContent = `Текст Поста: ${updated.body}`
+        }
+
         modalContainer.remove()
       }
     } else {
-      alert(`Введите правильные данные!`)
+      alert('Введите правильные данные!')
     }
   })
 

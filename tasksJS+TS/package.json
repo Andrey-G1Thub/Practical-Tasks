@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "task-15": "vite ./t-15_GET-POST",
-    "test": "vitest"
+    "test": "vitest --environment happy-dom"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Andrey-G1Thub/Practical-Tasks#readme",
   "description": "",
   "devDependencies": {
+    "happy-dom": "^21.0.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.5"

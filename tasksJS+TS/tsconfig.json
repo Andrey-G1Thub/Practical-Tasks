@@ -11,7 +11,7 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    "noEmit": true, // апрещает TypeScript засорять папки задач ненужными .js, .js.map и .d.ts файлами
 
     /* Linting */
     "strict": true,
@@ -19,5 +19,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include1": ["./**/*.ts"]
+  "include1": ["./**/*.ts"] // проверять типы во всех подпапках внутри tasksJS+TS
 }
