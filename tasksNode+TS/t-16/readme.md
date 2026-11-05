@@ -1,0 +1,16 @@
+## 1 Разобраться в существующем коде.
+
+
+# tsconfig.json
+
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "noEmit": false,
+    "sourceMap": true
+  },
+  "include": ["src/server/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

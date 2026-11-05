@@ -1,0 +1,29 @@
+{
+  "name": "tasks-node-ts",
+  "version": "1.0.0",
+  "description": "Практические задания по Node.js и TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:t-16:client": "esbuild t-16/src/client/app.ts --bundle --platform=browser --target=es2022 --outfile=t-16/public/app.js",
+    "typecheck:t-16:client": "tsc -p t-16/tsconfig.client.json"
+  },
+  "author": "Andrey R.",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "ejs": "^3.1.10",
+    "express": "^5.3.0",
+    "yargs": "^17.7.3"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.5",
+    "@types/yargs": "^17.0.35",
+    "esbuild": "^0.28.2",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
