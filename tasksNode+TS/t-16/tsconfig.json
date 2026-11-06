@@ -4,7 +4,8 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "noEmit": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node"]
   },
   "include": ["src/server/**/*.ts"],
   "exclude": ["node_modules", "dist"]
