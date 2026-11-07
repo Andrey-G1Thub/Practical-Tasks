@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
+import chalk from 'chalk'
 
 export interface Note {
   id: string
@@ -22,15 +23,48 @@ export async function saveNotes(notes: Note[]): Promise<void> {
   await writeFile(dbPath, JSON.stringify(notes, null, 2))
 }
 
-export async function addNote(newNotes: string) {
+export async function addNote(newTitle: string): Promise<void> {
   const notes = await getNotes()
   const note = {
     id: randomUUID(),
-    title: newNotes,
+    title: newTitle,
   }
   notes.push(note)
   //   const updatedNotes = [...notes, note];
   // await saveNotes(updatedNotes);
   await saveNotes(notes)
-  // console.log(chalk.bgGreen('Note was added!'))
+  console.log(chalk.bgGreen('Note was added!'))
+}
+
+export async function updateNote(id: string, newTitle: string): Promise<void> {
+  const notes = await getNotes()
+  const findNote = notes.find((note) => note.id === id)
+
+  if (!findNote) {
+    console.log(chalk.yellow(`Note with "${id}" not found`))
+    return
+  }
+  const updatedNotes = notes.map((note) => {
+    if (note.id === id) {
+      return { ...note, title: newTitle }
+    }
+    return note
+  })
+  await saveNotes(updatedNotes)
+  console.log(chalk.yellow(`Note with "${newTitle}" has been edited.`))
+}
+
+export async function deleteNote(id: string): Promise<void> {
+  const notes = await getNotes()
+  const findNote = notes.find((note) => note.id === id)
+
+  if (!findNote) {
+    console.log(chalk.yellow(`Note with "${id}" not found`))
+    return
+  }
+
+  const filtered = notes.filter((note) => note.id !== id)
+
+  await saveNotes(filtered)
+  console.log(chalk.red(`Note with id="${id}" has been removed.`))
 }

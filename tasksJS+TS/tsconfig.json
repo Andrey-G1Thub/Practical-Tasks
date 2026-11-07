@@ -19,5 +19,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include1": ["./**/*.ts"] // проверять типы во всех подпапках внутри tasksJS+TS
+  "include": ["./**/*.ts"] // проверять типы во всех подпапках внутри tasksJS+TS
 }
