@@ -36,13 +36,16 @@ export async function addNote(newTitle: string): Promise<void> {
   console.log(chalk.bgGreen('Note was added!'))
 }
 
-export async function updateNote(id: string, newTitle: string): Promise<void> {
+export async function updateNote(
+  id: string,
+  newTitle: string,
+): Promise<boolean> {
   const notes = await getNotes()
   const findNote = notes.find((note) => note.id === id)
 
   if (!findNote) {
     console.log(chalk.yellow(`Note with "${id}" not found`))
-    return
+    return false
   }
   const updatedNotes = notes.map((note) => {
     if (note.id === id) {
@@ -52,19 +55,21 @@ export async function updateNote(id: string, newTitle: string): Promise<void> {
   })
   await saveNotes(updatedNotes)
   console.log(chalk.yellow(`Note with "${newTitle}" has been edited.`))
+  return true
 }
 
-export async function deleteNote(id: string): Promise<void> {
+export async function deleteNote(id: string): Promise<boolean> {
   const notes = await getNotes()
   const findNote = notes.find((note) => note.id === id)
 
   if (!findNote) {
     console.log(chalk.yellow(`Note with "${id}" not found`))
-    return
+    return false
   }
 
   const filtered = notes.filter((note) => note.id !== id)
 
   await saveNotes(filtered)
   console.log(chalk.red(`Note with id="${id}" has been removed.`))
+  return true
 }
