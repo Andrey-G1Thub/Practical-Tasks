@@ -10,7 +10,7 @@ export interface Note {
 
 export type CreateNoteDto = Pick<Note, 'title'> // Pick<Note, 'title'> — встроенный utility type TypeScript. Он создаёт новый тип, выбирая из Note только указанное свойство.
 
-const dbPath = path.resolve(__dirname, '../../db.json')
+const dbPath = path.resolve(__dirname, '../../../db.json')
 
 export async function getNotes(): Promise<Note[]> {
   const data = await readFile(dbPath, 'utf-8')
@@ -23,7 +23,7 @@ export async function saveNotes(notes: Note[]): Promise<void> {
   await writeFile(dbPath, JSON.stringify(notes, null, 2))
 }
 
-export async function addNote(newTitle: string): Promise<void> {
+export async function addNote(newTitle: string): Promise<Note> {
   const notes = await getNotes()
   const note = {
     id: randomUUID(),
@@ -34,6 +34,7 @@ export async function addNote(newTitle: string): Promise<void> {
   // await saveNotes(updatedNotes);
   await saveNotes(notes)
   console.log(chalk.bgGreen('Note was added!'))
+  return note
 }
 
 export async function updateNote(

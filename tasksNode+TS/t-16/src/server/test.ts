@@ -1,4 +1,9 @@
-import { addNote, deleteNote, getNotes, updateNote } from './notes.controller'
+import {
+  addNote,
+  deleteNote,
+  getNotes,
+  updateNote,
+} from './controllers/notes.controller'
 
 async function main() {
   // Получаем заметки до добавления и обновления

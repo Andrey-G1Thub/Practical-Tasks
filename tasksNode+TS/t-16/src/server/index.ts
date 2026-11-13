@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import express from 'express'
 import notesRoutes from './routes/notes.routes'
 import path from 'node:path'
-import { getNotes } from './notes.controller'
+import { getNotes } from './controllers/notes.controller'
 
 const app = express()
 const PORT = 3000
@@ -17,10 +17,9 @@ app.use(express.static(path.resolve(__dirname, '../../public')))
 // console.log('Views:', path.resolve(__dirname, '../../pages'))
 // console.log('Public:', path.resolve(__dirname, '../../public'))
 app.get('/', async (req, res) => {
-  res.render('index', {
-    title: 'Express App',
+  return res.render('index', {
+    title: 't-16',
     notes: await getNotes(),
-     
   })
 })
 app.use('/notes', notesRoutes)

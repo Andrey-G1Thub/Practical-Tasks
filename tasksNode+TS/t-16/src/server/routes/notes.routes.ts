@@ -5,7 +5,7 @@ import {
   deleteNote,
   getNotes,
   updateNote,
-} from '../notes.controller'
+} from '../controllers/notes.controller'
 
 const router = Router()
 
@@ -23,9 +23,10 @@ router.post<{}, {}, CreateNoteDto>('/', async (req, res) => {
         message: 'Title is required',
       })
     }
-    await addNote(newTitle)
+    const newNote = await addNote(newTitle)
     res.status(201).json({
       message: 'Note created successfully',
+      note: newNote,
     })
   } catch (error) {
     console.error(error)

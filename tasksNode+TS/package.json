@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:t-16:client": "esbuild t-16/src/client/app.ts --bundle --platform=browser --target=es2022 --outfile=t-16/public/app.js",
-    "typecheck:t-16:client": "tsc -p t-16/tsconfig.client.json"
+    "typecheck:t-16:client": "tsc -p t-16/tsconfig.client.json",
+    "watch:t-16:client": "esbuild t-16/src/client/app.ts --bundle --platform=browser --target=es2022 --outfile=t-16/public/app.js --watch"
   },
   "author": "Andrey R.",
   "license": "ISC",
