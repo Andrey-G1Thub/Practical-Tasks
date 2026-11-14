@@ -18,6 +18,9 @@
 
   <button type="submit">Добавить заметку</button>
 </form>
+
+<p id="error-message"></p>
+
 <div  id="notes-list"> 
   <% notes.forEach((note) => { %>
       <p><%= note.title %></p> 

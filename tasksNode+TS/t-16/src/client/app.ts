@@ -1,16 +1,19 @@
-const notesList = document.querySelector<HTMLDivElement>('#notes-list')
+const errorMessage: HTMLParagraphElement | null =
+  document.querySelector<HTMLParagraphElement>('#error-message')
 
+const notesList = document.querySelector<HTMLDivElement>('#notes-list')
 const addNoteForm = document.querySelector<HTMLFormElement>('#add-note-form')
 const noteTitle = document.querySelector<HTMLInputElement>('#note-title')
-if (addNoteForm && noteTitle) {
+if (addNoteForm && noteTitle && errorMessage) {
   addNoteForm.addEventListener('submit', async (event) => {
     event.preventDefault()
 
     const titleData = noteTitle.value.trim()
-    console.log('titleData', titleData)
+    // console.log('titleData', titleData)
 
     if (!titleData) {
       console.log('Title is required')
+      errorMessage.textContent = 'Title is required'
       return
     }
     // console.log('titleData', titleData)
@@ -23,17 +26,21 @@ if (addNoteForm && noteTitle) {
       }),
     })
     const result = await response.json()
-    if (response.ok) {
-      console.log('result', result)
-      if (notesList) {
-        const elP = document.createElement('p')
-        // elP.textContent = titleData
-        elP.textContent = result.note.title
+    if (!response.ok) {
+      console.log(result.message)
+      errorMessage.textContent = result.message
 
-        notesList.append(elP)
-      }
-      noteTitle.value = ''
-      noteTitle.focus()
+      return
     }
+    if (notesList) {
+      const elP = document.createElement('p')
+      elP.textContent = result.note.title
+
+      notesList.append(elP)
+      console.log('Создана')
+    }
+    noteTitle.value = ''
+    noteTitle.focus()
+    errorMessage.textContent = ''
   })
 }
