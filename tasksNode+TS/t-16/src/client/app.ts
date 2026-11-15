@@ -17,30 +17,34 @@ if (addNoteForm && noteTitle && errorMessage) {
       return
     }
     // console.log('titleData', titleData)
+    try {
+      const response = await fetch('/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+        body: JSON.stringify({
+          title: titleData,
+        }),
+      })
+      const result = await response.json()
+      if (!response.ok) {
+        console.log(result.message)
+        errorMessage.textContent = result.message
 
-    const response = await fetch('/notes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-      body: JSON.stringify({
-        title: titleData,
-      }),
-    })
-    const result = await response.json()
-    if (!response.ok) {
-      console.log(result.message)
-      errorMessage.textContent = result.message
+        return
+      }
+      if (notesList) {
+        const elP = document.createElement('p')
+        elP.textContent = result.note.title
 
-      return
+        notesList.append(elP)
+        console.log('Создана')
+      }
+      noteTitle.value = ''
+      noteTitle.focus()
+      errorMessage.textContent = ''
+    } catch (error) {
+      console.log('error', error)
+      errorMessage.textContent = 'Не удалось связаться с сервером'
     }
-    if (notesList) {
-      const elP = document.createElement('p')
-      elP.textContent = result.note.title
-
-      notesList.append(elP)
-      console.log('Создана')
-    }
-    noteTitle.value = ''
-    noteTitle.focus()
-    errorMessage.textContent = ''
   })
 }
