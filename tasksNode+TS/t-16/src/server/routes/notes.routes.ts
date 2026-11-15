@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import {
   addNote,
-  CreateNoteDto,
   deleteNote,
   getNotes,
   updateNote,
 } from '../controllers/notes.controller'
+import { CreateNoteDto } from '../../shared/note_types'
 
 const router = Router()
 
