@@ -1,3 +1,4 @@
+import { stuctureNote } from './component/note'
 import type { Note } from '../shared/note_types'
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -10,22 +11,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       method: 'GET',
     })
     const result = await response.json()
-    
+
     if (!response.ok) {
       console.log(result.message)
       errorMessage.textContent = result.message // Сервер доступен, но вернул HTTP-ошибку
-      
       return
     }
-    
+
     errorMessage.textContent = ''
     const notes: Note[] = result
 
     notes.forEach((el) => {
-      const elP = document.createElement('p')
-      elP.textContent = el.title
+      // const elP = document.createElement('p')
+      // elP.textContent = el.title
+      const note = stuctureNote(el)
 
-      notesList.append(elP)
+      notesList.append(note)
     })
 
     console.log('Заметка получена')
@@ -39,6 +40,45 @@ const errorMessage: HTMLParagraphElement | null =
   document.querySelector<HTMLParagraphElement>('#error-message')
 
 const notesList = document.querySelector<HTMLDivElement>('#notes-list')
+notesList?.addEventListener('click', async (event) => {
+  const target = event.target
+
+  if (target instanceof Element) {
+    const clickedEl = target.closest('.delete-btn')
+    if (clickedEl) {
+      const note = clickedEl.closest<HTMLDivElement>('.note')
+
+      if (note) {
+        const id = note.dataset.id
+        if (!id) {
+          console.log('ID заметки отсутствует')
+          return
+        }
+
+        try {
+          const response = await fetch(`/notes/${id}`, {
+            method: 'DELETE',
+          })
+
+          if (!response.ok) {
+            const result = await response.json()
+            console.log(result.message)
+            console.log('result', result)
+
+            return
+          }
+          if (errorMessage) {
+            errorMessage.textContent = ''
+          }
+
+          note.remove()
+        } catch (error) {
+          console.log('error', error)
+        }
+      }
+    }
+  }
+})
 
 const addNoteForm = document.querySelector<HTMLFormElement>('#add-note-form')
 const noteTitle = document.querySelector<HTMLInputElement>('#note-title')
@@ -47,14 +87,13 @@ if (addNoteForm && noteTitle && errorMessage) {
     event.preventDefault()
 
     const titleData = noteTitle.value.trim()
-    // console.log('titleData', titleData)
 
     if (!titleData) {
       console.log('Title is required')
       errorMessage.textContent = 'Title is required'
       return
     }
-    // console.log('titleData', titleData)
+
     try {
       const response = await fetch('/notes', {
         method: 'POST',
@@ -71,10 +110,13 @@ if (addNoteForm && noteTitle && errorMessage) {
         return
       }
       if (notesList) {
-        const elP = document.createElement('p')
-        elP.textContent = result.note.title
+        // const elP = document.createElement('p')
+        // elP.textContent = result.note.title
+        // notesList.append(elP)
 
-        notesList.append(elP)
+        const createdNote = result.note
+        const note = stuctureNote(createdNote)
+        notesList.append(note)
         console.log('Создана')
       }
       noteTitle.value = ''
