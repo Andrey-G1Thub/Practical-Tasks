@@ -62,8 +62,10 @@ notesList?.addEventListener('click', async (event) => {
 
           if (!response.ok) {
             const result = await response.json()
-            console.log(result.message)
             console.log('result', result)
+            if (errorMessage) {
+              errorMessage.textContent = result.message
+            }
 
             return
           }
@@ -74,6 +76,9 @@ notesList?.addEventListener('click', async (event) => {
           note.remove()
         } catch (error) {
           console.log('error', error)
+          if (errorMessage) {
+            errorMessage.textContent = ' DELETE Не удалось связаться с сервером'
+          }
         }
       }
     }

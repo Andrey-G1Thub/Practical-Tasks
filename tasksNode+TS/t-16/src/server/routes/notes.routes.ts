@@ -6,6 +6,7 @@ import {
   updateNote,
 } from '../controllers/notes.controller'
 import { CreateNoteDto } from '../../shared/note_types'
+import { log } from 'node:console'
 
 const router = Router()
 
