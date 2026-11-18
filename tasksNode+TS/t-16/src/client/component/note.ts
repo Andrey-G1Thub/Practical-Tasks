@@ -6,12 +6,17 @@ export const stuctureNote = (note: Note) => {
   divIdNote.dataset.id = note.id
 
   const pEl = document.createElement('p')
+  pEl.dataset.id = 'pEl-id'
   pEl.textContent = note.title
 
-  const buttonNote = document.createElement('button')
-  buttonNote.className = 'delete-btn'
-  buttonNote.textContent = 'Удалить'
+  const updateBtn = document.createElement('button')
+  updateBtn.className = 'update-btn'
+  updateBtn.textContent = 'Редактировать'
 
-  divIdNote.append(pEl, buttonNote)
+  const deleteBtn = document.createElement('button')
+  deleteBtn.className = 'delete-btn'
+  deleteBtn.textContent = 'Удалить'
+
+  divIdNote.append(pEl, updateBtn, deleteBtn)
   return divIdNote
 }

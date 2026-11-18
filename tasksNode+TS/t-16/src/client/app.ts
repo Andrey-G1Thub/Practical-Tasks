@@ -1,5 +1,8 @@
 import { stuctureNote } from './component/note'
 import type { Note } from '../shared/note_types'
+import { modalNote } from './component/modal'
+
+const noteTitle = document.querySelector<HTMLInputElement>('#note-title')
 
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOMContentLoaded сработал')
@@ -83,10 +86,75 @@ notesList?.addEventListener('click', async (event) => {
       }
     }
   }
+
+  if (target instanceof Element) {
+    const clickedUpdateBtn: Element | null = target.closest('.update-btn')
+    if (clickedUpdateBtn) {
+      const noteUpdate: HTMLDivElement | null =
+        clickedUpdateBtn.closest<HTMLDivElement>('.note')
+      console.log('noteUpdate', noteUpdate)
+
+      if (noteUpdate) {
+        const id: string | undefined = noteUpdate.dataset.id
+
+        const titleEl: HTMLParagraphElement | null =
+          noteUpdate.querySelector('p')
+        const title: string | undefined = titleEl?.textContent
+
+        if (id && title) {
+          modalNote({ id, title })
+        }
+
+        // console.log('нажал на кнопку обновить')
+        // if (id) {
+        //   return
+        // }
+
+        // const modal = modalNote(noteUpdate)
+        // console.log('modal', modal)
+
+        // if (!titleData) {
+        //   console.log('Title is required')
+        //   errorMessage.textContent = 'Title is required'
+        //   return
+        // }
+
+        // try {
+        //   const response = await fetch(`/notes/${id}`, {
+        //     method: 'PUT',
+        //     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+        //     body: JSON.stringify({
+        //       title: 'Обновлено',
+        //       // title: modal,
+        //     }),
+        //   })
+
+        //   if (!response.ok) {
+        //     // console.log('result', resultUpdate)
+        //     if (errorMessage) {
+        //       // errorMessage.textContent = resultUpdate.message
+        //     }
+
+        //     return
+        //   }
+        //   const resultUpdate = await response.json()
+        //   if (errorMessage) {
+        //     errorMessage.textContent = ''
+        //   }
+        //   return resultUpdate
+        // } catch (error) {
+        //   console.log('error', error)
+        //   if (errorMessage) {
+        //     errorMessage.textContent = ' UPDATE Не удалось связаться с сервером'
+        //   }
+        // }
+      }
+    }
+  }
 })
 
 const addNoteForm = document.querySelector<HTMLFormElement>('#add-note-form')
-const noteTitle = document.querySelector<HTMLInputElement>('#note-title')
+
 if (addNoteForm && noteTitle && errorMessage) {
   addNoteForm.addEventListener('submit', async (event) => {
     event.preventDefault()
