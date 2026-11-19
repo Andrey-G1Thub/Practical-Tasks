@@ -1,6 +1,7 @@
 import { stuctureNote } from './component/note'
 import type { Note } from '../shared/note_types'
 import { modalNote } from './component/modal'
+import { errorMessage } from './component/error-message'
 
 const noteTitle = document.querySelector<HTMLInputElement>('#note-title')
 
@@ -39,8 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 })
 
-const errorMessage: HTMLParagraphElement | null =
-  document.querySelector<HTMLParagraphElement>('#error-message')
+// export const errorMessage: HTMLParagraphElement | null =
+//   document.querySelector<HTMLParagraphElement>('#error-message')
 
 const notesList = document.querySelector<HTMLDivElement>('#notes-list')
 notesList?.addEventListener('click', async (event) => {
@@ -163,7 +164,9 @@ if (addNoteForm && noteTitle && errorMessage) {
 
     if (!titleData) {
       console.log('Title is required')
-      errorMessage.textContent = 'Title is required'
+      if (errorMessage) {
+        errorMessage.textContent = 'Title is required'
+      }
       return
     }
 
@@ -178,7 +181,9 @@ if (addNoteForm && noteTitle && errorMessage) {
       const result = await response.json()
       if (!response.ok) {
         console.log(result.message)
-        errorMessage.textContent = result.message
+        if (errorMessage) {
+          errorMessage.textContent = result.message
+        }
 
         return
       }
@@ -194,10 +199,14 @@ if (addNoteForm && noteTitle && errorMessage) {
       }
       noteTitle.value = ''
       noteTitle.focus()
-      errorMessage.textContent = ''
+      if (errorMessage) {
+        errorMessage.textContent = ''
+      }
     } catch (error) {
       console.log('error', error)
-      errorMessage.textContent = 'POST Не удалось связаться с сервером'
+      if (errorMessage) {
+        errorMessage.textContent = 'POST Не удалось связаться с сервером'
+      }
     }
   })
 }
