@@ -103,52 +103,8 @@ notesList?.addEventListener('click', async (event) => {
         const title: string | undefined = titleEl?.textContent
 
         if (id && title) {
-          modalNote({ id, title })
+          modalNote({ id, title }, noteUpdate)
         }
-
-        // console.log('нажал на кнопку обновить')
-        // if (id) {
-        //   return
-        // }
-
-        // const modal = modalNote(noteUpdate)
-        // console.log('modal', modal)
-
-        // if (!titleData) {
-        //   console.log('Title is required')
-        //   errorMessage.textContent = 'Title is required'
-        //   return
-        // }
-
-        // try {
-        //   const response = await fetch(`/notes/${id}`, {
-        //     method: 'PUT',
-        //     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-        //     body: JSON.stringify({
-        //       title: 'Обновлено',
-        //       // title: modal,
-        //     }),
-        //   })
-
-        //   if (!response.ok) {
-        //     // console.log('result', resultUpdate)
-        //     if (errorMessage) {
-        //       // errorMessage.textContent = resultUpdate.message
-        //     }
-
-        //     return
-        //   }
-        //   const resultUpdate = await response.json()
-        //   if (errorMessage) {
-        //     errorMessage.textContent = ''
-        //   }
-        //   return resultUpdate
-        // } catch (error) {
-        //   console.log('error', error)
-        //   if (errorMessage) {
-        //     errorMessage.textContent = ' UPDATE Не удалось связаться с сервером'
-        //   }
-        // }
       }
     }
   }

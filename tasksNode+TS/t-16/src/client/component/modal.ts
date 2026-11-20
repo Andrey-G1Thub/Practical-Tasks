@@ -1,7 +1,7 @@
 import { Note } from '../../shared/note_types'
 import { errorMessage } from './error-message'
 
-export const modalNote = (note: Note) => {
+export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
   const modalWindow = document.querySelector('#modal-window')
   if (modalWindow) {
     modalWindow.remove()
@@ -55,10 +55,16 @@ export const modalNote = (note: Note) => {
         return
       }
       const resultUpdate = await response.json()
+      console.log('resultUpdate', resultUpdate)
+
       if (errorMessage) {
         errorMessage.textContent = ''
       }
-      return resultUpdate
+      const titleElement = noteUpdate.querySelector('p')
+      if (titleElement) {
+        titleElement.textContent = newTitle
+      }
+      modalContainer.remove()
     } catch (error) {
       if (errorMessage) {
         errorMessage.textContent = ' UPDATE Не удалось связаться с сервером'
