@@ -5,8 +5,7 @@ import {
   getNotes,
   updateNote,
 } from '../controllers/notes.controller'
-import { CreateNoteDto } from '../../shared/note_types'
-import { log } from 'node:console'
+import type { CreateNoteDto } from '../../shared/note_types'
 
 const router = Router()
 
@@ -49,12 +48,12 @@ router.put('/:id', async (req, res) => {
     }
     const updated = await updateNote(id, title)
     if (updated) {
-      res.status(200).json({
+      return res.status(200).json({
         message: 'Note updated successfully',
       })
     } else {
-      res.status(404).json({
-        message: 'Not Found',
+      return res.status(404).json({
+        message: 'Note Not Found',
       })
     }
   } catch (error) {

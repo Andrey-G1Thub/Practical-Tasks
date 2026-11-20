@@ -1,12 +1,11 @@
-import { Note } from '../../shared/note_types'
+import type { Note } from '../../shared/note_types'
 
-export const stuctureNote = (note: Note) => {
+export const structureNote = (note: Note) => {
   const divIdNote = document.createElement('div')
   divIdNote.className = 'note'
   divIdNote.dataset.id = note.id
 
   const pEl = document.createElement('p')
-  pEl.dataset.id = 'pEl-id'
   pEl.textContent = note.title
 
   const updateBtn = document.createElement('button')

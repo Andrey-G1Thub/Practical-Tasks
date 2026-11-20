@@ -1,4 +1,4 @@
-import { Note } from '../../shared/note_types'
+import type { Note } from '../../shared/note_types'
 import { errorMessage } from './error-message'
 
 export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
@@ -11,8 +11,6 @@ export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
   modalContainer.className = 'modal-container'
   modalContainer.id = 'modal-window'
   modalContainer.addEventListener('click', (event) => {
-    console.log('event.target', event.target)
-
     if (event.target === modalContainer) {
       modalContainer.remove()
     }
@@ -30,14 +28,18 @@ export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
     const id = formNote.dataset.id
 
     if (!newTitle) {
-      console.log('Поле не должно быть пустым')
+      if (errorMessage) {
+        errorMessage.textContent = 'Поле не должно быть пустым'
+      }
       return
     }
     if (!id) {
-      console.log('ID заметки отсутствует')
+      if (errorMessage) {
+        errorMessage.textContent = 'ID заметки отсутствует'
+      }
       return
     }
-    console.log(`Вы обновили заметку ${id} с текстом ${newTitle}`)
+
     try {
       const response = await fetch(`/notes/${id}`, {
         method: 'PUT',
@@ -46,16 +48,13 @@ export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
           title: newTitle,
         }),
       })
-      console.log('result', response)
+
       if (!response.ok) {
-        console.log('Ошибка обновления заметки')
         if (errorMessage) {
           errorMessage.textContent = 'Ошибка обновления заметки'
         }
         return
       }
-      const resultUpdate = await response.json()
-      console.log('resultUpdate', resultUpdate)
 
       if (errorMessage) {
         errorMessage.textContent = ''
@@ -67,7 +66,7 @@ export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
       modalContainer.remove()
     } catch (error) {
       if (errorMessage) {
-        errorMessage.textContent = ' UPDATE Не удалось связаться с сервером'
+        errorMessage.textContent = 'UPDATE Не удалось связаться с сервером'
       }
     }
   })
@@ -79,21 +78,21 @@ export const modalNote = (note: Note, noteUpdate: HTMLDivElement) => {
   modalTitleInput.name = 'title'
   modalTitleInput.required = true
 
-  const canselBtn: HTMLButtonElement = document.createElement('button')
-  canselBtn.className = 'cansel-btn'
-  canselBtn.textContent = 'Отменить'
-  canselBtn.type = 'button'
+  const cancelBtn: HTMLButtonElement = document.createElement('button')
+  cancelBtn.className = 'cansel-btn'
+  cancelBtn.textContent = 'Отменить'
+  cancelBtn.type = 'button'
 
   const saveBtn: HTMLButtonElement = document.createElement('button')
   saveBtn.className = 'save-btn'
+  saveBtn.type = 'submit'
   saveBtn.textContent = 'Сохранить'
 
-  formNote.append(modalTitleInput, canselBtn, saveBtn)
+  formNote.append(modalTitleInput, cancelBtn, saveBtn)
   modalContainer.append(formNote)
 
-  const bodyEl: HTMLBodyElement | null = document.querySelector('body')
-  bodyEl?.append(modalContainer)
-  canselBtn.addEventListener('click', () => {
+  document.body.append(modalContainer)
+  cancelBtn.addEventListener('click', () => {
     modalContainer.remove()
   })
   return modalContainer

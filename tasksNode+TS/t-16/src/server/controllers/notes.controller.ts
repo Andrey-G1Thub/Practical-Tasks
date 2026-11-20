@@ -1,15 +1,9 @@
-import type { Note, CreateNoteDto } from '../../shared/note_types'
+import type { Note } from '../../shared/note_types'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 import chalk from 'chalk'
 
-// export interface Note {
-//   id: string
-//   title: string
-// }
-
-// export type CreateNoteDto = Pick<Note, 'title'> // Pick<Note, 'title'> — встроенный utility type TypeScript. Он создаёт новый тип, выбирая из Note только указанное свойство.
 
 const dbPath = path.resolve(__dirname, '../../../db.json')
 
