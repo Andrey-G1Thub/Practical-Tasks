@@ -8,6 +8,9 @@ export const structureNote = (note: Note) => {
   const pEl = document.createElement('p')
   pEl.textContent = note.title
 
+  const actions = document.createElement('div')
+  actions.className = 'note-actions'
+
   const updateBtn = document.createElement('button')
   updateBtn.className = 'update-btn'
   updateBtn.textContent = 'Редактировать'
@@ -16,6 +19,7 @@ export const structureNote = (note: Note) => {
   deleteBtn.className = 'delete-btn'
   deleteBtn.textContent = 'Удалить'
 
-  divIdNote.append(pEl, updateBtn, deleteBtn)
+  actions.append(updateBtn, deleteBtn)
+  divIdNote.append(pEl, actions)
   return divIdNote
 }

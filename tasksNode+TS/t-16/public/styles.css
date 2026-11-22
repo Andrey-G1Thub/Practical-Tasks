@@ -1,0 +1,151 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+  color: #252a34;
+}
+
+/* Основной контейнер */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 60px auto;
+
+  padding: 32px;
+  background-color: #ffffff;
+  border-radius: 16px;
+}
+
+.header {
+  text-align: center;
+}
+.header h1 {
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+.subtitle {
+  color: #5a5c61;
+}
+.add-note-form {
+  display: flex;
+  gap: 10px;
+}
+/* inpu and button */
+.add-note-form input {
+  flex: 1;
+  height: 42px;
+  padding: 0 12px;
+  border: solid 1px #d1d5db;
+  border-radius: 5px;
+}
+.add-note-form button {
+  width: 200px;
+  height: 42px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.add-note-form input:focus {
+  outline: 2px solid #7c9cff;
+}
+.add-note-form button:hover {
+  background-color: rgb(190, 187, 187);
+}
+
+/* карточки заметок */
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  background-color: rgb(236, 236, 234);
+  border: solid 1px #d1d5db;
+  border-radius: 5px;
+  justify-content: space-between;
+  padding: 12px;
+  gap: 10px;
+}
+/* группа кнопок */
+.note-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+/* ширина заметки */
+.note p {
+  flex: 1;
+  min-width: 0;
+  /* white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+  overflow-wrap: anywhere;
+}
+
+/* кнопки */
+.update-btn,
+.delete-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-btn {
+  background-color: #0043ffd1;
+  color: white;
+}
+.update-btn:hover {
+  background-color: #0639c7d1;
+}
+.delete-btn {
+  background-color: #ff0000d1;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #d10b0bd1;
+}
+/* модальный экран */
+.modal-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+.modal-note {
+  background-color: white;
+  width: 100%;
+  padding: 15px;
+  max-width: 600px;
+  border-radius: 5px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  /* Это позволит прокручивать содержимое формы, если оно не помещается по высоте экрана. */
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+#modal-title-input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+}
+
+/* для мобилки */
+@media (max-width: 600px) {
+  .container {
+    margin: 20px auto;
+    padding: 16px;
+  }
+}
